@@ -1,0 +1,240 @@
+---
+import { navigationItems } from '../../config/site';
+
+const isHomepage = Astro.url.pathname === '/';
+const currentPath = Astro.url.pathname;
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+};
+
+// Elementy, które chcemy schować pod "O parafii"
+const parishSubpages = ['/duszpasterze', '/grupy-parafialne', '/kontakt'];
+
+const mainNavigation = navigationItems.filter(
+    (item) => !parishSubpages.includes(item.href)
+);
+
+const parishNavigation = navigationItems.filter(
+    (item) => parishSubpages.includes(item.href)
+);
+
+const isParishActive = isActive('/historia') || parishNavigation.some((item) => isActive(item.href));
+---
+
+<header
+    class:list={[
+      'z-20 w-full',
+      isHomepage
+          ? 'absolute inset-x-0 top-0 border-b border-white/15 bg-navy/40 text-white backdrop-blur-sm'
+          : 'border-b border-line bg-white text-navy',
+    ]}
+>
+  <div
+      class="mx-auto flex min-h-20 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8"
+  >
+
+    <!-- BRANDING -->
+    <a
+        href="/"
+        class:list={[
+          'group flex min-w-0 items-center gap-2 sm:gap-3 no-underline',
+          isHomepage ? 'text-white' : 'text-navy',
+        ]}
+        aria-label="Parafia Trójcy Świętej w Żeliszewie – strona główna"
+    >
+        <div
+                class="flex h-10 w-10 sm:h-14 sm:w-14 shrink-0 items-center justify-center"
+                aria-hidden="true"
+        >
+            <img
+                    src="/images/church_svg.png"
+                    alt=""
+                    class:list={[
+                        'h-full w-full object-contain',
+                        isHomepage ? 'brightness-0 invert' : '',
+                    ]}
+            />
+        </div>
+
+      <div class="leading-tight">
+        <span
+            class:list={[
+              'block font-serif text-[15px] font-bold sm:text-[18px]',
+              isHomepage ? 'text-white' : 'text-navy',
+            ]}
+        >
+          Parafia Trójcy Świętej
+        </span>
+
+        <span
+            class:list={[
+              'mt-0.5 block font-serif text-sm sm:text-base',
+              isHomepage ? 'text-white/90' : 'text-navy/80',
+            ]}
+        >
+          w Żeliszewie
+        </span>
+      </div>
+    </a>
+
+    <!-- DESKTOP -->
+    <nav class="hidden xl:block" aria-label="Główna nawigacja">
+      <ul class="flex items-center gap-5 whitespace-nowrap">
+
+        {mainNavigation.map((item) => (
+            <li>
+              <a
+                  href={item.href}
+                  class:list={[
+                    'relative block py-8 text-[15px] font-medium no-underline transition-colors',
+                    isHomepage
+                        ? 'text-white/90 hover:text-gold-light'
+                        : 'text-navy hover:text-gold',
+
+                    isActive(item.href) &&
+                    'after:absolute after:inset-x-0 after:bottom-[18px] after:h-0.5 after:bg-gold',
+
+                    isActive(item.href) && 'text-gold',
+                  ]}
+              >
+                {item.label}
+              </a>
+            </li>
+        ))}
+
+        <!-- O PARAFII -->
+        {parishNavigation.length > 0 && (
+            <li>
+              <details class="group relative">
+              <summary
+                  class:list={[
+                    'relative flex cursor-pointer list-none items-center gap-2 border-0 bg-transparent py-8 text-[15px] font-medium transition-colors',
+                    isHomepage
+                        ? 'text-white/90 hover:text-gold-light'
+                        : 'text-navy hover:text-gold',
+
+                    isParishActive && 'text-gold',
+
+                    isParishActive &&
+                    'after:absolute after:inset-x-0 after:bottom-[18px] after:h-0.5 after:bg-gold',
+                  ]}
+              >
+                O parafii
+
+                <svg
+                    class="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    aria-hidden="true"
+                >
+                  <path
+                      d="m6 8 4 4 4-4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                  />
+                </svg>
+              </summary>
+
+              <div
+                  class="absolute right-0 top-full z-30 min-w-56"
+              >
+                <div class="overflow-hidden rounded-lg border border-line bg-white py-2 shadow-xl">
+
+                  <a
+                      href="/historia"
+                      class="block px-5 py-3 text-sm font-medium text-navy no-underline transition-colors hover:bg-gold-light hover:text-navy"
+                  >
+                    Historia parafii
+                  </a>
+
+                  {parishNavigation.map((item) => (
+                      <a
+                          href={item.href}
+                          class:list={[
+                            'block px-5 py-3 text-sm font-medium text-navy no-underline transition-colors hover:bg-gold-light',
+                            isActive(item.href) && 'bg-gold-light',
+                          ]}
+                      >
+                        {item.label}
+                      </a>
+                  ))}
+
+                </div>
+              </div>
+              </details>
+            </li>
+        )}
+
+      </ul>
+    </nav>
+
+    <!-- MOBILE -->
+    <details class="relative shrink-0 xl:hidden">
+      <summary
+          class:list={[
+            'cursor-pointer list-none rounded-md px-3 py-3 text-sm font-semibold',
+            isHomepage
+                ? 'border border-white/70 text-white'
+                : 'border border-navy text-navy',
+          ]}
+      >
+        Menu
+      </summary>
+
+      <nav
+          class="absolute right-0 z-30 mt-3 w-[min(20rem,calc(100vw-2rem))] max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-lg border border-line bg-white p-3 shadow-xl"
+          aria-label="Mobilna nawigacja"
+      >
+        <ul class="space-y-1">
+
+          {mainNavigation.map((item) => (
+              <li>
+                <a
+                    href={item.href}
+                    class:list={[
+                      'block rounded-md px-4 py-3 text-sm font-medium text-navy no-underline transition-colors hover:bg-gold-light',
+                      isActive(item.href) && 'bg-gold-light',
+                    ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+          ))}
+
+          {parishNavigation.length > 0 && (
+              <li class="pt-2">
+                <p class="px-4 pb-1 text-xs font-bold uppercase tracking-wider text-gold">
+                  O parafii
+                </p>
+
+                <a
+                    href="/historia"
+                    class="block rounded-md px-4 py-2.5 text-sm font-medium text-navy no-underline hover:bg-gold-light"
+                >
+                  Historia parafii
+                </a>
+
+                {parishNavigation.map((item) => (
+                    <a
+                        href={item.href}
+                        class:list={[
+                          'block rounded-md px-4 py-2.5 text-sm font-medium text-navy no-underline hover:bg-gold-light',
+                          isActive(item.href) && 'bg-gold-light',
+                        ]}
+                    >
+                      {item.label}
+                    </a>
+                ))}
+              </li>
+          )}
+
+        </ul>
+      </nav>
+    </details>
+
+  </div>
+</header>

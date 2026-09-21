@@ -1,0 +1,19 @@
+---
+import Card from '../ui/Card.astro';
+import Badge from '../ui/Badge.astro';
+import { formatDateTime } from '../../utils/date';
+import { excerpt } from '../../utils/text';
+import type { ParishEvent } from '../../types/content';
+interface Props { event: ParishEvent; }
+const { event } = Astro.props;
+---
+<Card class="flex h-full flex-col">
+  {event.image && <a href={`/wydarzenia/${event.slug}`} class="mb-5 block overflow-hidden rounded-lg bg-surface" aria-label={`Zobacz wydarzenie: ${event.title}`}>
+    <img src={event.image.url} alt={event.image.alt} width={event.image.width} height={event.image.height} loading="lazy" class="aspect-[4/3] w-full object-contain" />
+  </a>}
+  <Badge>{formatDateTime(event.startDate)}</Badge>
+  <h2 class="mt-4 text-2xl"><a class="hover:text-gold" href={`/wydarzenia/${event.slug}`}>{event.title}</a></h2>
+  {event.location && <p class="mt-3 text-sm font-medium text-muted">{event.location}</p>}
+  <p class="mt-3 text-muted">{excerpt(event.description)}</p>
+  <a class="mt-5 font-semibold text-navy hover:text-gold" href={`/wydarzenia/${event.slug}`}>Poznaj szczegóły<span class="sr-only">: {event.title}</span></a>
+</Card>

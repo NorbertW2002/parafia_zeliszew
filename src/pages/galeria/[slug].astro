@@ -1,0 +1,20 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GalleryLightbox from '../../components/interactive/Gallery.vue';
+import { getGalleries } from '../../services/galleries';
+
+export async function getStaticPaths() {
+  const galleries = await getGalleries();
+  return galleries.map((gallery) => ({ params: { slug: gallery.slug }, props: { gallery } }));
+}
+const { gallery } = Astro.props;
+---
+<MainLayout seo={{ ...gallery.seo, title: gallery.seo.title ?? gallery.title, description: gallery.seo.description ?? gallery.description, image: gallery.images[0]?.url, canonicalPath: `/galeria/${gallery.slug}` }}>
+  <Breadcrumbs items={[{ label: 'Galeria', href: '/galeria' }, { label: gallery.title }]} />
+  <Section><Container><header class="max-w-3xl"><h1>{gallery.title}</h1>{gallery.description && <p class="mt-4 text-lg text-muted">{gallery.description}</p>}</header>
+    {gallery.images.length ? <div class="mt-8"><GalleryLightbox client:load images={gallery.images} /></div> : <p class="mt-8 rounded-md border border-line bg-surface p-5 text-muted">Zdjęcia w tej galerii nie są jeszcze dostępne.</p>}
+  </Container></Section>
+</MainLayout>

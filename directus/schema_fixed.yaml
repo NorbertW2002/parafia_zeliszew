@@ -1,0 +1,1334 @@
+# Directus 12.2.0 / PostgreSQL schema snapshot
+# Fixed: generated UUID primary keys, Polish editor labels/statuses,
+# and missing M2M fields/relations for attachments, galleries and homepage highlights.
+# Apply inside the Directus container with:
+#   node cli.js schema apply --dry-run /directus/schema_fixed.yaml
+#   node cli.js schema apply --yes /directus/schema_fixed.yaml
+
+version: 1
+directus: 12.2.0
+vendor: postgres
+collections:
+- collection: announcements
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: announcements
+    display_template: '{{title}}'
+    hidden: false
+    icon: campaign
+    singleton: false
+    sort: 1
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Ogłoszenia
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: announcements
+- collection: events
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: events
+    display_template: '{{title}}'
+    hidden: false
+    icon: event
+    singleton: false
+    sort: 2
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Wydarzenia
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: events
+- collection: mass_intentions
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: mass_intentions
+    display_template: '{{date}} {{time}}'
+    hidden: false
+    icon: church
+    singleton: false
+    sort: 3
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Intencje mszalne
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: mass_intentions
+- collection: galleries
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: galleries
+    display_template: '{{title}}'
+    hidden: false
+    icon: photo_library
+    singleton: false
+    sort: 4
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Galerie
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: galleries
+- collection: priests
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: priests
+    display_template: '{{name}}'
+    hidden: false
+    icon: person
+    singleton: false
+    sort: 5
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Księża
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: priests
+- collection: parish_groups
+  meta:
+    accountability: all
+    archive_app_filter: true
+    archive_field: status
+    archive_value: archived
+    collapse: open
+    collection: parish_groups
+    display_template: '{{name}}'
+    hidden: false
+    icon: groups
+    singleton: false
+    sort: 6
+    sort_field: sort
+    translations:
+    - language: pl-PL
+      translation: Grupy parafialne
+    unarchive_value: draft
+    versioning: false
+  schema:
+    name: parish_groups
+- collection: homepage
+  meta:
+    accountability: all
+    collapse: open
+    collection: homepage
+    hidden: false
+    icon: home
+    singleton: true
+    sort: 7
+    translations:
+    - language: pl-PL
+      translation: Strona główna
+    versioning: false
+  schema:
+    name: homepage
+- collection: announcements_files
+  meta:
+    accountability: all
+    collapse: locked
+    collection: announcements_files
+    hidden: true
+    icon: link
+    singleton: false
+    translations:
+    - language: pl-PL
+      translation: Załączniki ogłoszeń
+  schema:
+    name: announcements_files
+- collection: galleries_files
+  meta:
+    accountability: all
+    collapse: locked
+    collection: galleries_files
+    hidden: true
+    icon: link
+    singleton: false
+    translations:
+    - language: pl-PL
+      translation: Zdjęcia galerii
+  schema:
+    name: galleries_files
+- collection: homepage_announcements
+  meta:
+    accountability: all
+    collapse: locked
+    collection: homepage_announcements
+    hidden: true
+    icon: link
+    singleton: false
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione ogłoszenia
+  schema:
+    name: homepage_announcements
+- collection: homepage_events
+  meta:
+    accountability: all
+    collapse: locked
+    collection: homepage_events
+    hidden: true
+    icon: link
+    singleton: false
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione wydarzenia
+  schema:
+    name: homepage_events
+- collection: homepage_galleries
+  meta:
+    accountability: all
+    collapse: locked
+    collection: homepage_galleries
+    hidden: true
+    icon: link
+    singleton: false
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione galerie
+  schema:
+    name: homepage_galleries
+fields:
+- collection: announcements
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    has_auto_increment: false
+    is_unique: true
+- collection: announcements
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: announcements
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: announcements
+  field: slug
+  type: string
+  meta:
+    interface: input
+    options:
+      placeholder: weekly-announcement
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Adres URL
+    note: Część adresu strony. Używaj małych liter i myślników, bez polskich znaków.
+  schema:
+    is_nullable: false
+    is_unique: true
+- collection: announcements
+  field: title
+  type: string
+  meta:
+    interface: input
+    required: true
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Tytuł
+  schema:
+    is_nullable: false
+- collection: announcements
+  field: published_at
+  type: timestamp
+  meta:
+    interface: datetime
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Data publikacji
+  schema:
+    is_nullable: false
+- collection: announcements
+  field: content
+  type: text
+  meta:
+    interface: input-rich-text-html
+    required: true
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Treść
+  schema:
+    is_nullable: false
+- collection: announcements
+  field: seo_title
+  type: string
+  meta:
+    interface: input
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Tytuł SEO
+    note: Opcjonalne. Zostaw puste, jeśli zwykły tytuł strony jest wystarczający.
+  schema:
+    is_nullable: true
+- collection: announcements
+  field: seo_description
+  type: text
+  meta:
+    interface: input-multiline
+    options:
+      trim: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Opis SEO
+    note: Opcjonalny krótki opis strony dla wyszukiwarek.
+  schema:
+    is_nullable: true
+- collection: events
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    has_auto_increment: false
+    is_unique: true
+- collection: events
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: events
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: events
+  field: slug
+  type: string
+  meta:
+    interface: input
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Adres URL
+    note: Część adresu strony. Używaj małych liter i myślników, bez polskich znaków.
+  schema:
+    is_nullable: false
+    is_unique: true
+- collection: events
+  field: title
+  type: string
+  meta:
+    interface: input
+    required: true
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Tytuł
+  schema:
+    is_nullable: false
+- collection: events
+  field: description
+  type: text
+  meta:
+    interface: input-rich-text-html
+    required: true
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Opis
+  schema:
+    is_nullable: false
+- collection: events
+  field: start_date
+  type: timestamp
+  meta:
+    interface: datetime
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Data rozpoczęcia
+  schema:
+    is_nullable: false
+- collection: events
+  field: end_date
+  type: timestamp
+  meta:
+    interface: datetime
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Data zakończenia
+  schema:
+    is_nullable: true
+- collection: events
+  field: location
+  type: string
+  meta:
+    interface: input
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Miejsce
+  schema:
+    is_nullable: true
+- collection: events
+  field: featured_image
+  type: uuid
+  meta:
+    interface: file-image
+    special:
+    - file
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Zdjęcie główne
+  schema:
+    is_nullable: true
+- collection: events
+  field: seo_title
+  type: string
+  meta:
+    interface: input
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Tytuł SEO
+    note: Opcjonalne. Zostaw puste, jeśli zwykły tytuł strony jest wystarczający.
+  schema:
+    is_nullable: true
+- collection: events
+  field: seo_description
+  type: text
+  meta:
+    interface: input-multiline
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Opis SEO
+    note: Opcjonalny krótki opis strony dla wyszukiwarek.
+  schema:
+    is_nullable: true
+- collection: mass_intentions
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    has_auto_increment: false
+    is_unique: true
+- collection: mass_intentions
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: mass_intentions
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: mass_intentions
+  field: date
+  type: date
+  meta:
+    interface: datetime
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Data
+  schema:
+    is_nullable: false
+- collection: mass_intentions
+  field: time
+  type: time
+  meta:
+    interface: input
+    required: true
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Godzina
+  schema:
+    is_nullable: false
+- collection: mass_intentions
+  field: intention
+  type: text
+  meta:
+    interface: input-multiline
+    required: true
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Intencja
+  schema:
+    is_nullable: false
+- collection: mass_intentions
+  field: celebrant
+  type: string
+  meta:
+    interface: input
+    width: half
+    translations:
+    - language: pl-PL
+      translation: Celebrans
+  schema:
+    is_nullable: true
+- collection: galleries
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: false
+- collection: galleries
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: galleries
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: galleries
+  field: slug
+  type: string
+  meta:
+    interface: input
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Adres URL
+    note: Część adresu strony. Używaj małych liter i myślników, bez polskich znaków.
+  schema:
+    is_nullable: false
+    is_unique: true
+- collection: galleries
+  field: title
+  type: string
+  meta:
+    interface: input
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Tytuł
+  schema:
+    is_nullable: false
+- collection: galleries
+  field: description
+  type: text
+  meta:
+    interface: input-rich-text-html
+    translations:
+    - language: pl-PL
+      translation: Opis
+  schema:
+    is_nullable: true
+- collection: galleries
+  field: published_at
+  type: timestamp
+  meta:
+    interface: datetime
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Data publikacji
+  schema:
+    is_nullable: false
+- collection: galleries
+  field: seo_title
+  type: string
+  meta:
+    interface: input
+    translations:
+    - language: pl-PL
+      translation: Tytuł SEO
+    note: Opcjonalne. Zostaw puste, jeśli zwykły tytuł strony jest wystarczający.
+  schema:
+    is_nullable: true
+- collection: galleries
+  field: seo_description
+  type: text
+  meta:
+    interface: input-multiline
+    translations:
+    - language: pl-PL
+      translation: Opis SEO
+    note: Opcjonalny krótki opis strony dla wyszukiwarek.
+  schema:
+    is_nullable: true
+- collection: priests
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: false
+- collection: priests
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: priests
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: priests
+  field: name
+  type: string
+  meta:
+    interface: input
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Imię i nazwisko
+  schema:
+    is_nullable: false
+- collection: priests
+  field: role
+  type: string
+  meta:
+    interface: input
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Funkcja
+  schema:
+    is_nullable: false
+- collection: priests
+  field: biography
+  type: text
+  meta:
+    interface: input-rich-text-html
+    translations:
+    - language: pl-PL
+      translation: Biografia
+  schema:
+    is_nullable: true
+- collection: priests
+  field: email
+  type: string
+  meta:
+    interface: input
+    options:
+      trim: true
+    translations:
+    - language: pl-PL
+      translation: E-mail
+  schema:
+    is_nullable: true
+- collection: priests
+  field: phone
+  type: string
+  meta:
+    interface: input
+    translations:
+    - language: pl-PL
+      translation: Telefon
+  schema:
+    is_nullable: true
+- collection: priests
+  field: image
+  type: uuid
+  meta:
+    interface: file-image
+    special:
+    - file
+    translations:
+    - language: pl-PL
+      translation: Zdjęcie
+  schema:
+    is_nullable: true
+- collection: parish_groups
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: false
+- collection: parish_groups
+  field: status
+  type: string
+  meta:
+    interface: select-dropdown
+    options:
+      choices:
+      - text: Szkic
+        value: draft
+      - text: Opublikowane
+        value: published
+      - text: Zarchiwizowane
+        value: archived
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Status
+  schema:
+    default_value: draft
+    is_nullable: false
+- collection: parish_groups
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: parish_groups
+  field: name
+  type: string
+  meta:
+    interface: input
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Nazwa
+  schema:
+    is_nullable: false
+- collection: parish_groups
+  field: description
+  type: text
+  meta:
+    interface: input-rich-text-html
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Opis
+  schema:
+    is_nullable: false
+- collection: parish_groups
+  field: meeting_schedule
+  type: string
+  meta:
+    interface: input
+    translations:
+    - language: pl-PL
+      translation: Terminy spotkań
+  schema:
+    is_nullable: true
+- collection: parish_groups
+  field: contact_person
+  type: string
+  meta:
+    interface: input
+    translations:
+    - language: pl-PL
+      translation: Osoba kontaktowa
+  schema:
+    is_nullable: true
+- collection: parish_groups
+  field: image
+  type: uuid
+  meta:
+    interface: file-image
+    special:
+    - file
+    translations:
+    - language: pl-PL
+      translation: Zdjęcie
+  schema:
+    is_nullable: true
+- collection: homepage
+  field: id
+  type: uuid
+  meta:
+    hidden: true
+    interface: input
+    readonly: true
+    special:
+    - uuid
+    required: false
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: false
+- collection: homepage
+  field: introduction
+  type: text
+  meta:
+    interface: input-rich-text-html
+    required: true
+    translations:
+    - language: pl-PL
+      translation: Wprowadzenie
+  schema:
+    is_nullable: false
+- collection: announcements
+  field: attachments
+  type: alias
+  meta:
+    interface: list-m2m
+    special:
+    - m2m
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Załączniki
+  schema: null
+- collection: galleries
+  field: images
+  type: alias
+  meta:
+    interface: list-m2m
+    special:
+    - m2m
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Zdjęcia
+  schema: null
+- collection: homepage
+  field: featured_announcements
+  type: alias
+  meta:
+    interface: list-m2m
+    special:
+    - m2m
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione ogłoszenia
+  schema: null
+- collection: homepage
+  field: featured_events
+  type: alias
+  meta:
+    interface: list-m2m
+    special:
+    - m2m
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione wydarzenia
+  schema: null
+- collection: homepage
+  field: featured_galleries
+  type: alias
+  meta:
+    interface: list-m2m
+    special:
+    - m2m
+    width: full
+    translations:
+    - language: pl-PL
+      translation: Wyróżnione galerie
+  schema: null
+- collection: announcements_files
+  field: id
+  type: integer
+  meta:
+    hidden: true
+    readonly: true
+    interface: input
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: true
+- collection: announcements_files
+  field: announcements_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: announcements_files
+  field: directus_files_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: file
+    special:
+    - m2o
+    - file
+  schema:
+    is_nullable: true
+- collection: galleries_files
+  field: id
+  type: integer
+  meta:
+    hidden: true
+    readonly: true
+    interface: input
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: true
+- collection: galleries_files
+  field: galleries_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: galleries_files
+  field: directus_files_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: file-image
+    special:
+    - m2o
+    - file
+  schema:
+    is_nullable: true
+- collection: galleries_files
+  field: sort
+  type: integer
+  meta:
+    hidden: true
+    interface: input
+  schema:
+    is_nullable: true
+- collection: galleries_files
+  field: caption
+  type: string
+  meta:
+    interface: input
+    translations:
+    - language: pl-PL
+      translation: Podpis zdjęcia
+  schema:
+    is_nullable: true
+- collection: homepage_announcements
+  field: id
+  type: integer
+  meta:
+    hidden: true
+    readonly: true
+    interface: input
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: true
+- collection: homepage_announcements
+  field: homepage_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: homepage_announcements
+  field: announcements_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: homepage_events
+  field: id
+  type: integer
+  meta:
+    hidden: true
+    readonly: true
+    interface: input
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: true
+- collection: homepage_events
+  field: homepage_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: homepage_events
+  field: events_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: homepage_galleries
+  field: id
+  type: integer
+  meta:
+    hidden: true
+    readonly: true
+    interface: input
+  schema:
+    is_nullable: false
+    is_primary_key: true
+    is_unique: true
+    has_auto_increment: true
+- collection: homepage_galleries
+  field: homepage_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+- collection: homepage_galleries
+  field: galleries_id
+  type: uuid
+  meta:
+    hidden: true
+    interface: select-dropdown-m2o
+    special:
+    - m2o
+  schema:
+    is_nullable: true
+relations:
+- collection: events
+  field: featured_image
+  related_collection: directus_files
+  meta:
+    many_collection: events
+    many_field: featured_image
+    one_collection: directus_files
+    one_field: null
+  schema:
+    foreign_key_column: featured_image
+    foreign_key_table: events
+    constraint_name: events_featured_image_foreign
+- collection: priests
+  field: image
+  related_collection: directus_files
+  meta:
+    many_collection: priests
+    many_field: image
+    one_collection: directus_files
+    one_field: null
+  schema:
+    foreign_key_column: image
+    foreign_key_table: priests
+    constraint_name: priests_image_foreign
+- collection: parish_groups
+  field: image
+  related_collection: directus_files
+  meta:
+    many_collection: parish_groups
+    many_field: image
+    one_collection: directus_files
+    one_field: null
+  schema:
+    foreign_key_column: image
+    foreign_key_table: parish_groups
+    constraint_name: parish_groups_image_foreign
+- collection: announcements_files
+  field: announcements_id
+  related_collection: announcements
+  meta:
+    many_collection: announcements_files
+    many_field: announcements_id
+    one_collection: announcements
+    one_field: attachments
+    junction_field: directus_files_id
+  schema:
+    foreign_key_column: announcements_id
+    foreign_key_table: announcements
+    constraint_name: announcements_files_announcements_id_foreign
+- collection: announcements_files
+  field: directus_files_id
+  related_collection: directus_files
+  meta:
+    many_collection: announcements_files
+    many_field: directus_files_id
+    one_collection: directus_files
+    one_field: null
+    junction_field: announcements_id
+  schema:
+    foreign_key_column: directus_files_id
+    foreign_key_table: directus_files
+    constraint_name: announcements_files_directus_files_id_foreign
+- collection: galleries_files
+  field: galleries_id
+  related_collection: galleries
+  meta:
+    many_collection: galleries_files
+    many_field: galleries_id
+    one_collection: galleries
+    one_field: images
+    junction_field: directus_files_id
+    sort_field: sort
+  schema:
+    foreign_key_column: galleries_id
+    foreign_key_table: galleries
+    constraint_name: galleries_files_galleries_id_foreign
+- collection: galleries_files
+  field: directus_files_id
+  related_collection: directus_files
+  meta:
+    many_collection: galleries_files
+    many_field: directus_files_id
+    one_collection: directus_files
+    one_field: null
+    junction_field: galleries_id
+  schema:
+    foreign_key_column: directus_files_id
+    foreign_key_table: directus_files
+    constraint_name: galleries_files_directus_files_id_foreign
+- collection: homepage_announcements
+  field: homepage_id
+  related_collection: homepage
+  meta:
+    many_collection: homepage_announcements
+    many_field: homepage_id
+    one_collection: homepage
+    one_field: featured_announcements
+    junction_field: announcements_id
+  schema:
+    foreign_key_column: homepage_id
+    foreign_key_table: homepage
+    constraint_name: homepage_announcements_homepage_id_foreign
+- collection: homepage_announcements
+  field: announcements_id
+  related_collection: announcements
+  meta:
+    many_collection: homepage_announcements
+    many_field: announcements_id
+    one_collection: announcements
+    one_field: null
+    junction_field: homepage_id
+  schema:
+    foreign_key_column: announcements_id
+    foreign_key_table: announcements
+    constraint_name: homepage_announcements_announcements_id_foreign
+- collection: homepage_events
+  field: homepage_id
+  related_collection: homepage
+  meta:
+    many_collection: homepage_events
+    many_field: homepage_id
+    one_collection: homepage
+    one_field: featured_events
+    junction_field: events_id
+  schema:
+    foreign_key_column: homepage_id
+    foreign_key_table: homepage
+    constraint_name: homepage_events_homepage_id_foreign
+- collection: homepage_events
+  field: events_id
+  related_collection: events
+  meta:
+    many_collection: homepage_events
+    many_field: events_id
+    one_collection: events
+    one_field: null
+    junction_field: homepage_id
+  schema:
+    foreign_key_column: events_id
+    foreign_key_table: events
+    constraint_name: homepage_events_events_id_foreign
+- collection: homepage_galleries
+  field: homepage_id
+  related_collection: homepage
+  meta:
+    many_collection: homepage_galleries
+    many_field: homepage_id
+    one_collection: homepage
+    one_field: featured_galleries
+    junction_field: galleries_id
+  schema:
+    foreign_key_column: homepage_id
+    foreign_key_table: homepage
+    constraint_name: homepage_galleries_homepage_id_foreign
+- collection: homepage_galleries
+  field: galleries_id
+  related_collection: galleries
+  meta:
+    many_collection: homepage_galleries
+    many_field: galleries_id
+    one_collection: galleries
+    one_field: null
+    junction_field: homepage_id
+  schema:
+    foreign_key_column: galleries_id
+    foreign_key_table: galleries
+    constraint_name: homepage_galleries_galleries_id_foreign

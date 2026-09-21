@@ -1,0 +1,43 @@
+{
+  "directus": "12.1.1",
+  "roles": [
+    {
+      "name": "Administrator",
+      "builtIn": true,
+      "policy": {
+        "admin_access": true,
+        "app_access": true
+      }
+    },
+    {
+      "name": "Editor",
+      "icon": "edit",
+      "policy": {
+        "app_access": true,
+        "permissions": "create,read,update,delete on all parish collections and their junctions; directus_files create,read,update"
+      }
+    },
+    {
+      "name": "Contributor",
+      "icon": "rate_review",
+      "policy": {
+        "app_access": true,
+        "permissions": "create,read,update own draft items only; presets status=draft; validation status in [draft]; no delete or publish"
+      }
+    },
+    {
+      "name": "Public",
+      "builtIn": true,
+      "policy": {
+        "app_access": false,
+        "permissions": "read only where status=published on announcements, events, mass_intentions, galleries, priests, parish_groups, homepage, sacraments; read linked directus_files; parish_pages read only where status=published"
+      }
+    }
+  ],
+  "statusWorkflow": [
+    "draft",
+    "published",
+    "archived"
+  ],
+  "notes": "Directus schema snapshots do not include roles, policies, or permissions. Apply schema.yaml with the Directus CLI, then create these Directus 12 policies and attach them to the built-in Administrator/Public roles and the Editor/Contributor roles through the /roles, /policies, and /permissions APIs."
+}

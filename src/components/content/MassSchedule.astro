@@ -1,0 +1,48 @@
+---
+import type { MassIntention } from '../../types/content';
+import { formatDate } from '../../utils/date';
+interface Props { intentions: MassIntention[]; variant?: 'full' | 'compact'; }
+const { intentions, variant = 'full' } = Astro.props;
+const grouped = intentions.reduce<Record<string, MassIntention[]>>((groups, intention) => {
+  (groups[intention.date] ??= []).push(intention);
+  return groups;
+}, {});
+const dayFormatter = new Intl.DateTimeFormat('pl-PL', { day: '2-digit' });
+const monthFormatter = new Intl.DateTimeFormat('pl-PL', { month: 'short' });
+const weekdayFormatter = new Intl.DateTimeFormat('pl-PL', { weekday: 'short' });
+const dateFromValue = (value: string) => new Date(`${value}T00:00:00`);
+---
+{variant === 'compact' ? (
+  intentions.length ? <div class="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
+    {intentions.map((intention) => {
+      const date = dateFromValue(intention.date);
+      return <article class="grid grid-cols-[3.75rem_4.5rem_minmax(0,1fr)] border-b border-line last:border-b-0">
+        <time datetime={intention.date} class="flex flex-col items-center justify-center border-r border-line px-2 py-3 text-center leading-tight">
+          <span class="font-serif text-xl font-semibold text-navy">{dayFormatter.format(date)}</span>
+          <span class="mt-0.5 text-xs font-semibold uppercase text-gold">{monthFormatter.format(date).replace('.', '')}</span>
+          <span class="mt-0.5 text-[0.65rem] font-semibold uppercase text-muted">{weekdayFormatter.format(date).replace('.', '')}</span>
+        </time>
+        <time datetime={`${intention.date}T${intention.time}`} class="flex items-center justify-center border-r border-line px-2 text-sm font-medium text-muted">{intention.time.slice(0, 5)}</time>
+        <div class="min-w-0 px-4 py-3">
+          <p class="text-sm leading-6 text-ink">{intention.intention}</p>
+          {intention.celebrant && <p class="mt-1 text-xs text-muted">{intention.celebrant}</p>}
+        </div>
+      </article>;
+    })}
+  </div> : <p class="rounded-md border border-line bg-white p-5 text-muted">Aktualne intencje mszalne zostaną opublikowane wkrótce.</p>
+) : intentions.length ? (
+  <div class="space-y-8">
+    {Object.entries(grouped).map(([date, values]) => (
+      <section aria-labelledby={`intencje-${date}`}>
+        <h2 id={`intencje-${date}`} class="text-2xl">{formatDate(date)}</h2>
+        <ul class="mt-4 divide-y divide-line rounded-lg border border-line">
+          {values.map((intention) => <li class="grid gap-2 p-4 sm:grid-cols-[5rem_1fr_auto] sm:items-center">
+            <time class="font-semibold text-navy" datetime={`${intention.date}T${intention.time}`}>{intention.time.slice(0, 5)}</time>
+            <p>{intention.intention}</p>
+            {intention.celebrant && <span class="text-sm text-muted">{intention.celebrant}</span>}
+          </li>)}
+        </ul>
+      </section>
+    ))}
+  </div>
+) : <p class="rounded-md border border-line bg-surface p-5 text-muted">Aktualne intencje mszalne zostaną opublikowane wkrótce.</p>}

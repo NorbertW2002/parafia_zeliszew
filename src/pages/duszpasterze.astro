@@ -1,0 +1,39 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import PriestCard from '../components/content/PriestCard.astro';
+import Alert from '../components/ui/Alert.astro';
+import { getPriests } from '../services/priests';
+const priests = await getPriests();
+---
+<MainLayout seo={{ title: 'Duszpasterze', description: 'Kapłani posługujący w parafii.', canonicalPath: '/duszpasterze' }}>
+  <Breadcrumbs items={[{ label: 'Duszpasterze' }]} /><PageHeader title="Duszpasterze" introduction="Kapłani i lata ich posługi w naszej wspólnocie." />
+  <Section>
+    <Container>
+      {priests.length ? (
+        <div class="mx-auto max-w-4xl">
+          <p class="mb-8 text-sm text-muted">Według lat rozpoczęcia posługi — od najnowszych.</p>
+          <ol aria-label="Duszpasterze według lat posługi" class="ml-2 border-l border-line">
+            {priests.map((priest) => (
+              <li class="relative pb-10 pl-6 last:pb-0 sm:pl-10">
+                <span aria-hidden="true" class="absolute top-2 -left-[5px] h-[9px] w-[9px] rounded-full bg-gold ring-4 ring-white" />
+                <div class="grid gap-3 md:grid-cols-[10rem_minmax(0,1fr)] md:gap-8">
+                  <p class="font-medium text-navy tabular-nums">
+                    <span class="sr-only">Lata posługi: </span>
+                    {priest.yearStarted && <>{!priest.yearEnded && 'od '}<time datetime={String(priest.yearStarted).padStart(4, '0')}>{priest.yearStarted}</time></>}
+                    {priest.yearEnded && <>{priest.yearStarted ? ' – ' : 'do '}<time datetime={String(priest.yearEnded).padStart(4, '0')}>{priest.yearEnded}</time></>}
+                    {!priest.yearStarted && !priest.yearEnded && <span class="text-sm font-normal text-muted">Daty nieuzupełnione</span>}
+                  </p>
+                  <PriestCard priest={priest} />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : <Alert title="Informacje wkrótce">Lista duszpasterzy zostanie uzupełniona.</Alert>}
+    </Container>
+  </Section>
+</MainLayout>

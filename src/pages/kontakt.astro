@@ -1,0 +1,32 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import Button from '../components/ui/Button.astro';
+import { getParishPage, contactLinks } from '../services/parish-pages';
+import { getHomepageContent } from '../services/homepage';
+const [page, homepage] = await Promise.all([getParishPage('kontakt'), getHomepageContent()]);
+const links = contactLinks(page);
+const officeHours = page.office_hours || homepage.officeHours;
+---
+<MainLayout seo={{ title: page.title, description: page.description, canonicalPath: '/kontakt' }}>
+  <Breadcrumbs items={[{ label: page.title }]} />
+  <PageHeader title={page.title} introduction={page.description} />
+  <Section><Container>
+    <div class="grid gap-8 lg:grid-cols-2">
+      <section class="rounded-xl border border-line p-6 sm:p-8" aria-labelledby="contact-address">
+        <h2 id="contact-address">Dane parafii</h2>
+        <address class="mt-6 space-y-2 text-lg not-italic"><p>{page.address}<br />{page.postal_address}</p><p><a class="font-semibold text-navy underline" href={links.phone}>{page.phone}</a></p>{page.email && <p><a class="break-all text-navy underline" href={`mailto:${page.email}`}>{page.email}</a></p>}</address>
+        <div class="mt-6 flex flex-wrap gap-3"><Button href={links.phone}>Zadzwoń do parafii</Button><Button href={links.directions} variant="secondary">Wyznacz trasę</Button></div>
+      </section>
+      <section class="rounded-xl bg-surface p-6 sm:p-8" aria-labelledby="contact-office">
+        <h2 id="contact-office">Kancelaria parafialna</h2>
+        {officeHours && <p class="mt-5 whitespace-pre-line text-lg font-medium text-navy">{officeHours}</p>}
+        <div class="mt-5 space-y-4">{page.content.split(/\n\s*\n/).map((paragraph) => <p>{paragraph}</p>)}</div>
+        <a href="/sakramenty" class="mt-6 inline-block font-semibold text-navy underline">Przygotowanie do sakramentów</a>
+      </section>
+    </div>
+  </Container></Section>
+</MainLayout>

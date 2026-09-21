@@ -1,0 +1,24 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/navigation/Navbar.astro';
+import Footer from '../components/navigation/Footer.astro';
+import MetaHead from '../components/seo/MetaHead.astro';
+import type { SeoMetadata } from '../types/content';
+interface Props { seo?: SeoMetadata; noindex?: boolean; jsonLd?: object[]; }
+const { seo, noindex = false, jsonLd = [] } = Astro.props;
+const organizationSchema = {
+  '@context': 'https://schema.org', '@type': 'Church', name: 'Parish Starter', url: Astro.site?.toString(),
+};
+---
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.png" />
+    <MetaHead seo={seo} noindex={noindex} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    {jsonLd.map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
+  </head>
+  <body class="flex min-h-screen flex-col"><a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:p-4 focus:text-navy">Przejdź do treści</a><Navbar /><main id="main-content" class="flex-1"><slot /></main><Footer /></body>
+</html>

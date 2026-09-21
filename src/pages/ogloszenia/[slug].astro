@@ -1,0 +1,26 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Attachments from '../../components/content/Attachments.astro';
+import { formatDate } from '../../utils/date';
+import { getAnnouncements } from '../../services/announcements';
+
+export async function getStaticPaths() {
+  const announcements = await getAnnouncements();
+  return announcements.map((announcement) => ({ params: { slug: announcement.slug }, props: { announcement } }));
+}
+const { announcement } = Astro.props;
+---
+<MainLayout seo={{ ...announcement.seo, title: announcement.seo.title ?? announcement.title, canonicalPath: `/ogloszenia/${announcement.slug}` }}>
+  <Breadcrumbs items={[{ label: 'Ogłoszenia', href: '/ogloszenia' }, { label: announcement.title }]} />
+  <Section><Container class="!max-w-3xl"><article><Badge>{formatDate(announcement.publishedAt)}</Badge><h1 class="mt-4">{announcement.title}</h1>
+    <div
+      class="announcement-content mt-8 text-lg leading-8 text-ink"
+      set:html={announcement.content}
+  />
+    <Attachments attachments={announcement.attachments} />
+  </article></Container></Section>
+</MainLayout>

@@ -1,0 +1,18 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PageHeader from '../../components/layout/PageHeader.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import EventCard from '../../components/content/EventCard.astro';
+import Alert from '../../components/ui/Alert.astro';
+import EventCalendar from '../../components/interactive/EventCalendar.vue';
+import { getEvents } from '../../services/events';
+const events = await getEvents();
+---
+<MainLayout seo={{ title: 'Wydarzenia', description: 'Kalendarz wydarzeń parafialnych.', canonicalPath: '/wydarzenia' }}>
+  <Breadcrumbs items={[{ label: 'Wydarzenia' }]} /><PageHeader title="Wydarzenia" introduction="Spotkania, uroczystości i inicjatywy naszej wspólnoty." />
+  <Section><Container>
+    {events.length ? <><EventCalendar client:load events={events} /><h2 class="mt-12">Lista wydarzeń</h2><div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{events.map((event) => <EventCard event={event} />)}</div></> : <Alert title="Brak wydarzeń">Kalendarz zostanie uzupełniony po publikacji wydarzeń.</Alert>}
+  </Container></Section>
+</MainLayout>

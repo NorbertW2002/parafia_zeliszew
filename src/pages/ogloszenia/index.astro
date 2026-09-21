@@ -1,0 +1,15 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PageHeader from '../../components/layout/PageHeader.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import AnnouncementCard from '../../components/content/AnnouncementCard.astro';
+import Alert from '../../components/ui/Alert.astro';
+import { getAnnouncements } from '../../services/announcements';
+const announcements = await getAnnouncements();
+---
+<MainLayout seo={{ title: 'Ogłoszenia', description: 'Aktualne oraz archiwalne ogłoszenia parafialne.', canonicalPath: '/ogloszenia' }}>
+  <Breadcrumbs items={[{ label: 'Ogłoszenia' }]} /><PageHeader title="Ogłoszenia" introduction="Aktualne informacje z życia parafii." />
+  <Section><Container>{announcements.length ? <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{announcements.map((announcement) => <AnnouncementCard announcement={announcement} />)}</div> : <Alert title="Brak ogłoszeń">Ogłoszenia pojawią się tutaj po ich opublikowaniu.</Alert>}</Container></Section>
+</MainLayout>

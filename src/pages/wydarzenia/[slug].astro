@@ -1,0 +1,21 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { formatDateTime } from '../../utils/date';
+import { getEvents } from '../../services/events';
+
+export async function getStaticPaths() {
+  const events = await getEvents();
+  return events.map((event) => ({ params: { slug: event.slug }, props: { event } }));
+}
+const { event } = Astro.props;
+const eventSchema = { '@context': 'https://schema.org', '@type': 'Event', name: event.title, startDate: event.startDate, endDate: event.endDate, location: event.location ? { '@type': 'Place', name: event.location } : undefined, image: event.image?.url, description: event.description };
+---
+<MainLayout seo={{ ...event.seo, title: event.seo.title ?? event.title, description: event.seo.description ?? event.description, image: event.image?.url, canonicalPath: `/wydarzenia/${event.slug}` }} jsonLd={[eventSchema]}>
+  <Breadcrumbs items={[{ label: 'Wydarzenia', href: '/wydarzenia' }, { label: event.title }]} />
+  <Section><Container class="max-w-3xl"><article>{event.image && <img src={event.image.url} alt={event.image.alt} width={event.image.width} height={event.image.height} class="mb-8 aspect-video w-full rounded-lg object-cover" />}<Badge>{formatDateTime(event.startDate)}</Badge><h1 class="mt-4">{event.title}</h1>
+    {event.endDate && <p class="mt-3 font-medium text-muted">Do: {formatDateTime(event.endDate)}</p>}{event.location && <p class="mt-2 font-medium text-muted">Miejsce: {event.location}</p>}<p class="mt-8 whitespace-pre-wrap text-lg leading-8">{event.description}</p></article></Container></Section>
+</MainLayout>

@@ -1,0 +1,17 @@
+---
+import type { Priest } from '../../types/content';
+interface Props { priest: Priest; }
+const { priest } = Astro.props;
+---
+<article class="min-w-0 sm:flex sm:items-start sm:gap-6">
+  {priest.image && <img src={priest.image.url} alt={priest.image.alt || priest.name} width={priest.image.width} height={priest.image.height} loading="lazy" class="mb-5 aspect-[3/4] w-28 shrink-0 rounded-md object-cover sm:mb-0 sm:w-32" />}
+  <div class="min-w-0 flex-1 break-words">
+  <h2 class="text-2xl sm:text-3xl">{priest.name}</h2>
+  <p class="mt-1 font-medium text-gold">{priest.role}</p>
+  {priest.biography && <p class="mt-4 text-muted">{priest.biography}</p>}
+  {(priest.email || priest.phone) && <address class="mt-4 not-italic text-muted">
+    {priest.email && <a class="block hover:text-navy" href={`mailto:${priest.email}`}>{priest.email}</a>}
+    {priest.phone && <a class="block hover:text-navy" href={`tel:${priest.phone.replace(/\s/g, '')}`}>{priest.phone}</a>}
+  </address>}
+  </div>
+</article>

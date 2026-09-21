@@ -1,0 +1,29 @@
+---
+import type { Attachment } from '../../types/content';
+
+interface Props {
+  attachments: Attachment[];
+  headingId?: string;
+}
+
+const { attachments, headingId = 'zalaczniki' } = Astro.props;
+const imageAttachments = attachments.filter((attachment) => attachment.type?.startsWith('image/'));
+const fileAttachments = attachments.filter((attachment) => !attachment.type?.startsWith('image/'));
+---
+
+{attachments.length > 0 && <section class="mt-10" aria-labelledby={headingId}>
+  <h2 id={headingId}>Załączniki</h2>
+  {imageAttachments.length > 0 && <div class="mt-5 grid gap-4 sm:grid-cols-2">
+    {imageAttachments.map((attachment) => <a href={attachment.url} target="_blank" rel="noopener" class="group overflow-hidden rounded-lg border border-line bg-surface focus-visible:outline-navy">
+      <img src={attachment.url} alt={attachment.alt} loading="lazy" class="aspect-[4/3] w-full object-cover transition-transform group-hover:scale-[1.02] motion-reduce:transition-none" />
+      <span class="block px-4 py-3 text-sm font-semibold text-navy group-hover:text-gold">Otwórz obraz w pełnym rozmiarze</span>
+    </a>)}
+  </div>}
+  {fileAttachments.length > 0 && <ul class="mt-5 space-y-3">
+    {fileAttachments.map((attachment) => <li>
+      <a class="flex min-h-11 items-center justify-between gap-4 rounded-lg border border-line px-4 py-3 font-semibold text-navy no-underline hover:border-gold hover:text-gold" href={attachment.url} target="_blank" rel="noopener">
+        <span class="min-w-0 truncate">{attachment.label}</span><span class="shrink-0 text-sm">Pobierz plik</span>
+      </a>
+    </li>)}
+  </ul>}
+</section>}

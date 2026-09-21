@@ -1,0 +1,15 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import PageHeader from '../../components/layout/PageHeader.astro';
+import Container from '../../components/layout/Container.astro';
+import Section from '../../components/layout/Section.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GalleryCard from '../../components/content/GalleryCard.astro';
+import Alert from '../../components/ui/Alert.astro';
+import { getGalleries } from '../../services/galleries';
+const galleries = await getGalleries();
+---
+<MainLayout seo={{ title: 'Galeria', description: 'Fotografie z życia parafii.', canonicalPath: '/galeria' }}>
+  <Breadcrumbs items={[{ label: 'Galeria' }]} /><PageHeader title="Galeria" introduction="Wspomnienia z życia naszej parafii." />
+  <Section><Container>{galleries.length ? <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{galleries.map((gallery) => <GalleryCard gallery={gallery} />)}</div> : <Alert title="Brak galerii">Galerie zdjęć pojawią się tutaj po publikacji.</Alert>}</Container></Section>
+</MainLayout>

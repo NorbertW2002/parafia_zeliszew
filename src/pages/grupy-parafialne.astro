@@ -1,0 +1,15 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import ParishGroupCard from '../components/content/ParishGroupCard.astro';
+import Alert from '../components/ui/Alert.astro';
+import { getParishGroups } from '../services/parish-groups';
+const groups = await getParishGroups();
+---
+<MainLayout seo={{ title: 'Grupy parafialne', description: 'Wspólnoty i grupy działające w parafii.', canonicalPath: '/grupy-parafialne' }}>
+  <Breadcrumbs items={[{ label: 'Grupy parafialne' }]} /><PageHeader title="Grupy parafialne" introduction="Znajdź miejsce dla siebie we wspólnocie." />
+  <Section><Container>{groups.length ? <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{groups.map((group) => <ParishGroupCard group={group} />)}</div> : <Alert title="Informacje wkrótce">Lista grup parafialnych zostanie uzupełniona.</Alert>}</Container></Section>
+</MainLayout>

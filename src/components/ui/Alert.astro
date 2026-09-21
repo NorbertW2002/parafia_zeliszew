@@ -1,0 +1,9 @@
+---
+interface Props { title?: string; variant?: 'info' | 'warning'; }
+const { title, variant = 'info' } = Astro.props;
+const classes = variant === 'warning' ? 'border-gold bg-gold-light' : 'border-navy bg-surface';
+---
+<aside class={`rounded-md border-l-4 p-4 text-ink ${classes}`} role="status">
+  {title && <h2 class="font-sans text-base font-semibold text-navy">{title}</h2>}
+  <div class={title ? 'mt-1' : ''}><slot /></div>
+</aside>

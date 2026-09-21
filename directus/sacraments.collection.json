@@ -1,0 +1,182 @@
+{
+  "collection": "sacraments",
+  "meta": {
+    "icon": "church",
+    "display_template": "{{title}}",
+    "accountability": "all",
+    "archive_field": "status",
+    "archive_value": "archived",
+    "unarchive_value": "draft",
+    "archive_app_filter": true,
+    "translations": [
+      {
+        "language": "pl-PL",
+        "translation": "Sakramenty"
+      }
+    ]
+  },
+  "schema": {},
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "meta": {
+        "hidden": true,
+        "interface": "input",
+        "special": [
+          "uuid"
+        ]
+      },
+      "schema": {
+        "is_primary_key": true,
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "required": true,
+        "options": {
+          "choices": [
+            {
+              "text": "Szkic",
+              "value": "draft"
+            },
+            {
+              "text": "Opublikowany",
+              "value": "published"
+            },
+            {
+              "text": "Archiwalny",
+              "value": "archived"
+            }
+          ]
+        }
+      },
+      "schema": {
+        "default_value": "draft",
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "slug",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "required": true,
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Sakrament"
+          }
+        ],
+        "options": {
+          "choices": [
+            {
+              "text": "Chrzest święty",
+              "value": "chrzest"
+            },
+            {
+              "text": "Bierzmowanie",
+              "value": "bierzmowanie"
+            },
+            {
+              "text": "Eucharystia i Pierwsza Komunia Święta",
+              "value": "eucharystia"
+            },
+            {
+              "text": "Pokuta i pojednanie",
+              "value": "pokuta-i-pojednanie"
+            },
+            {
+              "text": "Namaszczenie chorych",
+              "value": "namaszczenie-chorych"
+            },
+            {
+              "text": "Małżeństwo",
+              "value": "malzenstwo"
+            },
+            {
+              "text": "Sakrament święceń",
+              "value": "kaplanstwo"
+            }
+          ]
+        }
+      },
+      "schema": {
+        "is_unique": true,
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "title",
+      "type": "string",
+      "meta": {
+        "interface": "input",
+        "required": true,
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Tytuł"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "description",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "required": true,
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Opis"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "preparation",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "required": true,
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Jak się przygotować?"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "documents",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "required": false,
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Dokumenty i formalności"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": true
+      }
+    }
+  ]
+}

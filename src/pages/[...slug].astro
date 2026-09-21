@@ -1,0 +1,22 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.filter((page) => !['sakramenty', 'kontakt', 'historia'].includes(page.data.slug)).map((page) => ({ params: { slug: page.data.slug }, props: { page } }));
+}
+
+interface Props { page: CollectionEntry<'pages'>; }
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+<MainLayout seo={{ title: page.data.title, description: page.data.description, image: page.data.featuredImage, canonicalPath: `/${page.data.slug}` }} noindex={page.data.noindex}>
+  <Breadcrumbs items={[{ label: page.data.title }]} />
+  <PageHeader title={page.data.title} introduction={page.data.description} />
+  <Section><Container class="!max-w-3xl"><article class="prose prose-slate max-w-none prose-headings:font-serif prose-a:text-navy"><Content /></article></Container></Section>
+</MainLayout>

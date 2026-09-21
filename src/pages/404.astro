@@ -1,0 +1,9 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import Button from '../components/ui/Button.astro';
+---
+<MainLayout seo={{ title: 'Nie znaleziono strony', description: 'Podana strona nie istnieje.' }} noindex>
+  <Section><Container class="max-w-3xl text-center"><p class="font-semibold text-gold">Błąd 404</p><h1 class="mt-3">Nie znaleziono strony</h1><p class="mt-5 text-lg text-muted">Adres może być nieaktualny albo zawierać literówkę.</p><div class="mt-8"><Button href="/">Wróć na stronę główną</Button></div></Container></Section>
+</MainLayout>

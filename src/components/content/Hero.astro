@@ -1,0 +1,15 @@
+---
+import Button from '../ui/Button.astro';
+interface Props { title: string; description: string; actionHref?: string; actionLabel?: string; }
+const { title, description, actionHref, actionLabel } = Astro.props;
+---
+<section class="relative isolate overflow-hidden bg-navy pb-16 pt-28 text-white sm:pb-20 sm:pt-32">
+  <img src="/images/parafia-hero.jpg" alt="Kościół parafialny Trójcy Świętej w Żeliszewie" width="1024" height="720" fetchpriority="high" class="absolute inset-0 -z-20 h-full w-full object-cover" />
+  <div class="absolute inset-0 -z-10 bg-linear-to-r from-navy/95 via-navy/75 to-navy/25"></div>
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <p class="text-xs font-semibold tracking-wider text-gold-light uppercase">Wspólnota wiary, modlitwy i spotkania</p>
+    <h1 class="mt-4 max-w-3xl text-3xl text-white sm:text-5xl">{title}</h1>
+    <p class="mt-4 max-w-xl text-base leading-7 sm:text-lg text-slate-100">{description}</p>
+    {actionHref && actionLabel && <div class="mt-6 flex flex-wrap gap-3"><Button href={actionHref} variant="secondary" class="border-white bg-white text-navy hover:bg-gold-light">{actionLabel}</Button><Button href="/intencje-mszalne" variant="secondary" class="border-white bg-transparent text-white hover:bg-white hover:text-navy">Intencje mszalne</Button></div>}
+  </div>
+</section>

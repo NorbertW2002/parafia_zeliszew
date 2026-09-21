@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import Container from '../components/layout/Container.astro';
+import Section from '../components/layout/Section.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import Search from '../components/interactive/Search.vue';
+import { getAnnouncements } from '../services/announcements';
+import { getEvents } from '../services/events';
+import { buildSearchIndex } from '../utils/search-index';
+import { getParishPage } from '../services/parish-pages';
+import { excerpt } from '../utils/text';
+
+const [pages, announcements, events] = await Promise.all([getCollection('pages'), getAnnouncements(), getEvents()]);
+const managedPages = await Promise.all([getParishPage('kontakt'), getParishPage('historia')]);
+const index = buildSearchIndex(
+  [...pages.filter((page) => !['kontakt', 'historia'].includes(page.data.slug)).map((page) => ({ title: page.data.title, description: excerpt(page.body ?? ''), href: `/${page.data.slug}`, category: 'Strona' })), ...managedPages.map((page) => ({ title: page.title, description: excerpt(page.content), href: `/${page.slug}`, category: 'Strona' }))],
+  announcements,
+  events,
+);
+---
+<MainLayout seo={{ title: 'Szukaj', description: 'Wyszukiwarka treści parafialnych.', canonicalPath: '/szukaj' }}>
+  <Breadcrumbs items={[{ label: 'Szukaj' }]} /><PageHeader title="Szukaj" introduction="Znajdź informacje, ogłoszenia i wydarzenia." />
+  <Section><Container class="max-w-3xl"><Search client:load items={index} /></Container></Section>
+</MainLayout>

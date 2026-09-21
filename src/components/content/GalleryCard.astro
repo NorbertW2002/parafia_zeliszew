@@ -1,0 +1,16 @@
+---
+import Card from '../ui/Card.astro';
+import { formatDate } from '../../utils/date';
+import type { Gallery } from '../../types/content';
+interface Props { gallery: Gallery; }
+const { gallery } = Astro.props;
+const cover = gallery.images[0];
+---
+<Card class="overflow-hidden p-0">
+  {cover && <img src={cover.url} alt={cover.alt} width={cover.width} height={cover.height} loading="lazy" class="aspect-video w-full object-cover" />}
+  <div class="p-6">
+    <p class="text-sm text-muted">{formatDate(gallery.publishedAt)}</p>
+    <h2 class="mt-2 text-2xl"><a class="hover:text-gold" href={`/galeria/${gallery.slug}`}>{gallery.title}</a></h2>
+    {gallery.description && <p class="mt-3 text-muted">{gallery.description}</p>}
+  </div>
+</Card>

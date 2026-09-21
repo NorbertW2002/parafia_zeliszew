@@ -1,0 +1,13 @@
+---
+import Card from '../ui/Card.astro';
+import type { ParishGroup } from '../../types/content';
+interface Props { group: ParishGroup; }
+const { group } = Astro.props;
+---
+<Card>
+  {group.image && <img src={group.image.url} alt={group.image.alt} width={group.image.width} height={group.image.height} loading="lazy" class="mb-5 aspect-video w-full rounded-md object-cover" />}
+  <h2>{group.name}</h2>
+  <p class="mt-4 text-muted">{group.description || 'Informacje o spotkaniach zostaną wkrótce uzupełnione.'}</p>
+  {group.meetingSchedule && <p class="mt-4 text-sm font-semibold text-navy">Spotkania: <span class="font-normal text-muted">{group.meetingSchedule}</span></p>}
+  {group.contactPerson && <p class="mt-2 text-sm font-semibold text-navy">Kontakt: <span class="font-normal text-muted">{group.contactPerson}</span></p>}
+</Card>

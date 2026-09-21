@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #12304a;
+  --color-navy-dark: #0b2235;
+  --color-gold: #80600f;
+  --color-gold-light: #ead181;
+  --color-ink: #1d2935;
+  --color-muted: #5e6b75;
+  --color-surface: #f8fafb;
+  --color-line: #d8e0e5;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, Cambria, "Times New Roman", serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white font-sans text-ink antialiased; }
+  :focus-visible { @apply outline-3 outline-offset-3 outline-navy; }
+  a { @apply underline-offset-4; }
+  h1, h2, h3 { @apply font-serif text-navy; }
+  h1 { @apply text-4xl leading-tight font-semibold sm:text-5xl; }
+  h2 { @apply text-3xl leading-tight font-semibold; }
+  h3 { @apply text-2xl leading-snug font-semibold; }
+  p { @apply leading-7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+@layer components {
+  .prose, .announcement-content { font-size: 1.0625rem; line-height: 1.85; }
+  .prose > * + *, .announcement-content > * + * { margin-top: 1.25rem; }
+  .prose :is(h2,h3), .announcement-content :is(h2,h3) { margin-top: 2rem; margin-bottom: .75rem; }
+  .prose ol, .announcement-content ol { list-style: decimal; padding-left: 1.5rem; }
+  .prose ul, .announcement-content ul { list-style: disc; padding-left: 1.5rem; }
+  .prose li + li, .announcement-content li + li { margin-top: .75rem; }
+  .prose a, .announcement-content a { text-decoration: underline; }
+  .prose img, .announcement-content img { max-width: 100%; height: auto; border-radius: .75rem; }
+  .prose, .announcement-content { overflow-wrap: anywhere; }
+}

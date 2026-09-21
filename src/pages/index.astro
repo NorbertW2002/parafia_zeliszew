@@ -1,0 +1,109 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Hero from '../components/content/Hero.astro';
+import AnnouncementCard from '../components/content/AnnouncementCard.astro';
+import EventCard from '../components/content/EventCard.astro';
+import Alert from '../components/ui/Alert.astro';
+import Section from '../components/layout/Section.astro';
+import Container from '../components/layout/Container.astro';
+import Button from '../components/ui/Button.astro';
+import MassSchedule from '../components/content/MassSchedule.astro';
+import { getParishPage, contactLinks } from '../services/parish-pages';
+import { getUpcomingEvents } from '../services/events';
+import { getAnnouncements } from '../services/announcements';
+import { getHomepageContent } from '../services/homepage';
+import { getUpcomingMassIntentions } from '../services/mass-intentions';
+
+const [announcements, events, homepage, upcomingIntentions, contact] = await Promise.all([
+  getAnnouncements(),
+  getUpcomingEvents(),
+  getHomepageContent(),
+  getUpcomingMassIntentions(),
+  getParishPage('kontakt'),
+]);
+const links = contactLinks(contact);
+const selectHighlights = <T extends { id: string }>(items: T[], featuredIds: string[]) => {
+  if (featuredIds.length === 0) return items.slice(0, 3);
+  const byId = new Map(items.map((item) => [item.id, item]));
+  return featuredIds.flatMap((id) => {
+    const item = byId.get(id);
+    return item ? [item] : [];
+  });
+};
+const featuredAnnouncements = selectHighlights(announcements, homepage.featuredAnnouncementIds);
+const featuredEvents = selectHighlights(events, homepage.featuredEventIds);
+const parishInfo = [
+  { title: 'Msze Święte', content: homepage.massSchedule },
+  { title: 'Spowiedź', content: homepage.confessionSchedule },
+  { title: 'Kancelaria parafialna', content: contact.office_hours || homepage.officeHours },
+  { title: 'Adoracja Najświętszego Sakramentu', content: homepage.adorationSchedule },
+];
+---
+<MainLayout seo={{ canonicalPath: '/' }}>
+  <Hero title="Parafia Trójcy Świętej w Żeliszewie" description={homepage.introduction || 'Najważniejsze informacje, aktualności i zaproszenia do wspólnego przeżywania wiary.'} actionHref="/ogloszenia" actionLabel="Zobacz ogłoszenia" />
+  <div class="relative z-10 -mt-8 pb-4">
+    <Container>
+      <section class="grid overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 md:grid-cols-2 lg:grid-cols-4" aria-label="Najważniejsze informacje">
+        {parishInfo.map((item) => <article class="border-b border-line p-6 last:border-b-0 md:border-r lg:border-b-0">
+          <p class="text-sm font-semibold uppercase tracking-wide text-gold">
+            {item.title}
+          </p>
+          {item.title === 'Msze Święte' && item.content ? <div class="mt-3 space-y-3">{item.content.split(/\n|(?=Dni powszednie:)/).filter(Boolean).map((line) => {
+            const separator = /^\D[^:]*:/.test(line.trim()) ? line.indexOf(':') : -1;
+            return <p>{separator > 0 ? <><span class="block text-sm text-muted">{line.slice(0, separator)}</span><strong class="block text-xl font-semibold text-navy">{line.slice(separator + 1).trim()}</strong></> : /^\s*\d/.test(line) ? <strong class="block text-xl font-semibold text-navy">{line}</strong> : <span class="text-sm text-muted">{line}</span>}</p>;
+          })}</div> : <p class="mt-3 whitespace-pre-line text-base leading-7 text-ink">{item.content || 'Szczegóły dostępne w kancelarii parafialnej.'}</p>}
+        </article>)}
+      </section>
+    </Container>
+  </div>
+  <Section labelledBy="aktualnosci">
+    <Container>
+      <div class="grid gap-10 lg:grid-cols-2">
+        <section>
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <p class="font-semibold text-gold">Na bieżąco</p>
+              <h2 id="aktualnosci" class="mt-1">Najnowsze ogłoszenia</h2>
+            </div>
+            <Button href="/ogloszenia" variant="secondary">
+              Wszystkie
+            </Button>
+          </div>
+          {featuredAnnouncements.length ? <div class="mt-6 space-y-4">
+            {featuredAnnouncements.map((announcement) => <AnnouncementCard announcement={announcement} />)}</div> :
+              <div class="mt-6">
+                <Alert title="Ogłoszenia wkrótce">
+                  Aktualne ogłoszenia zostaną opublikowane przez parafię.
+                </Alert>
+              </div>}
+        </section>
+        <section aria-labelledby="wydarzenia">
+          <div class="flex items-end justify-between gap-4">
+            <div><p class="font-semibold text-gold">Nadchodzące</p><h2 id="wydarzenia" class="mt-1">Najbliższe wydarzenia</h2></div><Button href="/wydarzenia" variant="secondary">Zobacz wszystkie</Button></div>{featuredEvents.length ? <div class="mt-6 space-y-4">{featuredEvents.map((event) => <EventCard event={event} />)}</div> : <div class="mt-6"><Alert title="Brak wydarzeń">Wróć wkrótce po aktualny harmonogram.</Alert></div>}</section></div></Container></Section>
+  <Section class="bg-surface" labelledBy="intencje">
+    <Container>
+      <div class="grid gap-8 lg:grid-cols-2">
+        <section>
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <p class="font-semibold text-gold">Intencje mszalne</p>
+              <h2 id="intencje" class="mt-1">Na najbliższe dni</h2>
+            </div>
+            <Button href="/intencje-mszalne" variant="secondary">Wszystkie</Button>
+          </div>
+          <div class="mt-6"><MassSchedule intentions={upcomingIntentions} variant="compact" /></div>
+        </section>
+        <article class="grid overflow-hidden rounded-xl bg-white shadow-sm sm:grid-cols-2">
+          <div class="p-6 sm:p-8">
+            <p class="font-semibold text-gold">Nasza parafia</p>
+            <h2 class="mt-1">Kim jesteśmy?</h2>
+            <p class="mt-3 text-muted">Poznaj historię, tradycję i wspólnotę naszej parafii.</p>
+            <div class="mt-5"><Button href="/historia">Poznaj historię</Button></div>
+          </div>
+          <img src="/images/parafia-hero.jpg" alt="Kościół parafialny" loading="lazy" class="h-56 w-full object-cover sm:h-full" />
+        </article>
+      </div>
+    </Container>
+  </Section>
+  <Section labelledBy="kontakt"><Container><div class="grid overflow-hidden rounded-xl bg-white shadow-sm lg:grid-cols-[0.8fr_1.2fr]"><section class="p-8"><p class="font-semibold text-gold">Kontakt</p><h2 id="kontakt" class="mt-1">Dane parafii</h2><address class="mt-5 space-y-2 not-italic text-muted"><p>{contact.address}</p><p>{contact.postal_address}</p><p><a class="font-semibold text-navy" href={links.phone}>{contact.phone}</a></p></address><div class="mt-6"><Button href="/kontakt" variant="secondary">Kontakt i dojazd</Button></div></section><div class="flex flex-col justify-center gap-5 bg-surface p-8"><h3>Zaplanuj wizytę</h3><p class="text-muted">Sprawdź trasę do kościoła i godziny pracy kancelarii.</p><div class="flex flex-wrap gap-3"><Button href={links.directions}>Wyznacz trasę</Button><Button href={links.phone} variant="secondary">Zadzwoń</Button></div></div></div></Container></Section>
+</MainLayout>
