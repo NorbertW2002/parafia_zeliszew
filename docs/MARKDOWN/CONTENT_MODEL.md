@@ -273,3 +273,7 @@ At the user's request, `parish_pages` provides published plain-text overrides fo
 
 Priests support optional integer fields year_started and year_ended in Directus. The frontend displays a service-year range, or 'od' / 'do' for a single year. Entries are ordered by start year descending (end year if the start is unknown); undated entries appear last. The clergy page uses an accessible responsive timeline.
 
+
+## Weekly mass intentions (2026-09-28)
+
+weekly_intentions replaces individual mass_intentions on the website. Fields: id (UUID), status (draft/published/archived), week_start (unique Monday date), content (plain multiline text pasted from Word). Sunday is derived. Only valid published weeks are rendered. Legacy records are retained in Directus but no longer feed the website.

@@ -103,3 +103,10 @@ export interface SearchItem {
   href: string;
   category: string;
 }
+
+export interface WeeklyIntention {
+ id: string;
+ weekStart: string;
+ weekEnd: string;
+ content: string;
+}

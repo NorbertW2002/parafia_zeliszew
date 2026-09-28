@@ -98,3 +98,22 @@ Skonfigurowano konto `Website Pages reader` z polityką `Website pages reader`: 
 Token zapisany jest jako `DIRECTUS_PAGES_API_TOKEN` w lokalnym `.env`. Nie wyświetlaj go i nie dodawaj do repozytorium. W środowisku hostingu ustaw tę samą zmienną jako sekret budowania. Pozostałe kolekcje korzystają z dotychczasowego dostępu. Public nie otrzymuje odczytu tych dwóch kolekcji.
 
 W `npm run dev` zapisane, opublikowane treści są pobierane przy odświeżeniu strony. Dla `npm run preview` i wdrożenia statycznego wymagany jest nowy build. Zmiana pliku `.env` może wymagać restartu serwera deweloperskiego.
+
+## Intencje tygodniowe (2026-09-28)
+
+Nowym źródłem strony i sekcji na stronie głównej jest kolekcja weekly_intentions (Intencje mszalne — tygodnie). Jeden rekord obejmuje poniedziałek–niedzielę.
+
+1. Otwórz kolekcję „Intencje mszalne — tygodnie” i dodaj wpis.
+2. Wybierz datę poniedziałku w polu „Początek tygodnia”. Nie wybieraj innego dnia — taki wpis nie pojawi się na stronie. Data musi być unikalna; istniejący tydzień należy edytować.
+3. Skopiuj z Worda całą treść wraz z nazwami dni i godzinami i wklej w „Intencje na cały tydzień”.
+4. Sprawdź podziały wierszy, ustaw status Opublikowany i zapisz.
+
+Pole jest zwykłym tekstem: zachowuje akapity i nowe linie, bez pogrubień, tabel i czcionek Worda. Treść nie jest automatycznie dzielona na pojedyncze msze. HTML jest wyświetlany jako tekst, nie wykonywany.
+
+Plik directus/weekly-intentions.collection.json jest body POST /collections dla nowej instancji. Lokalna kolekcja została już utworzona — nie importuj ponownie. Pięć starych opublikowanych wpisów skopiowano do dwóch tygodni. Oryginały pozostawiono w „Intencje — stare pojedyncze wpisy”; ich edycja nie zmienia już strony. Szkiców nie publikowano.
+
+Polityka Website pages reader otrzymała wyłącznie read do weekly_intentions. Serwer korzysta z istniejącego DIRECTUS_PAGES_API_TOKEN; Public nie otrzymał dostępu. Frontend pobiera i sprawdza status published. Dla osobnego konta redaktora skonfiguruj create/read/update tej kolekcji bez admin access. Zmiana istniejącego opublikowanego tygodnia na draft/archived usuwa go ze strony po przebudowaniu.
+
+Kalendarz pokazuje pełne tygodnie także wtedy, gdy przecinają granicę miesiąca lub roku. Kliknięcie dnia prowadzi do treści całego tygodnia. Kropka oznacza dostępność planu tygodniowego, nie potwierdza mszy w konkretnym dniu. Link ?tydzien=YYYY-MM-DD otwiera wybrany opublikowany tydzień.
+
+Dev pobiera treść po odświeżeniu; wersja statyczna wymaga builda i wdrożenia. Dodaj weekly_intentions do istniejącego deploy Flow dla create/update/delete, także przy wycofaniu publikacji. Nie zmieniono zdalnego wdrożenia ani jego Flow. Po zmianach wykonaj nowy snapshot schematu; stare schema.yaml nie zawiera tej kolekcji.

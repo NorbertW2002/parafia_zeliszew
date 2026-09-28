@@ -7,18 +7,17 @@ import Alert from '../components/ui/Alert.astro';
 import Section from '../components/layout/Section.astro';
 import Container from '../components/layout/Container.astro';
 import Button from '../components/ui/Button.astro';
-import MassSchedule from '../components/content/MassSchedule.astro';
 import { getParishPage, contactLinks } from '../services/parish-pages';
 import { getUpcomingEvents } from '../services/events';
 import { getAnnouncements } from '../services/announcements';
 import { getHomepageContent } from '../services/homepage';
-import { getUpcomingMassIntentions } from '../services/mass-intentions';
+import { getWeeklyIntentions } from '../services/weekly-intentions';
 
 const [announcements, events, homepage, upcomingIntentions, contact] = await Promise.all([
   getAnnouncements(),
   getUpcomingEvents(),
   getHomepageContent(),
-  getUpcomingMassIntentions(),
+  getWeeklyIntentions(),
   getParishPage('kontakt'),
 ]);
 const links = contactLinks(contact);
@@ -32,6 +31,9 @@ const selectHighlights = <T extends { id: string }>(items: T[], featuredIds: str
 };
 const featuredAnnouncements = selectHighlights(announcements, homepage.featuredAnnouncementIds);
 const featuredEvents = selectHighlights(events, homepage.featuredEventIds);
+const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Warsaw'}).format(new Date());
+const upcomingWeeks = upcomingIntentions.filter(week => week.weekEnd >= today).slice(0,2);
+const weekDate = (value: string) => new Intl.DateTimeFormat('pl-PL', {day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));
 const parishInfo = [
   { title: 'Msze Święte', content: homepage.massSchedule },
   { title: 'Spowiedź', content: homepage.confessionSchedule },
@@ -87,11 +89,11 @@ const parishInfo = [
           <div class="flex items-end justify-between gap-4">
             <div>
               <p class="font-semibold text-gold">Intencje mszalne</p>
-              <h2 id="intencje" class="mt-1">Na najbliższe dni</h2>
+              <h2 id="intencje" class="mt-1">Intencje na cały tydzień</h2>
             </div>
             <Button href="/intencje-mszalne" variant="secondary">Wszystkie</Button>
           </div>
-          <div class="mt-6"><MassSchedule intentions={upcomingIntentions} variant="compact" /></div>
+          <div class="mt-6 space-y-3">{upcomingWeeks.length ? upcomingWeeks.map(week => <a href={'/intencje-mszalne?tydzien='+week.weekStart} class="block rounded-lg border border-line bg-white p-5 hover:border-navy"><span class="block font-semibold text-navy">{weekDate(week.weekStart)} – {weekDate(week.weekEnd)}</span><span class="mt-2 block text-sm text-muted">Przeczytaj wszystkie intencje na ten tydzień →</span></a>) : <p class="text-muted">Intencje na najbliższy tydzień zostaną opublikowane wkrótce.</p>}</div>
         </section>
         <article class="grid overflow-hidden rounded-xl bg-white shadow-sm sm:grid-cols-2">
           <div class="p-6 sm:p-8">

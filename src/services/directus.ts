@@ -23,7 +23,7 @@ export async function getDirectusItems<T>(
   console.log('[Directus] Request:', url.toString());
 
   try {
-    const token = ['parish_pages', 'sacraments'].includes(collection)
+    const token = ['parish_pages', 'sacraments', 'weekly_intentions'].includes(collection)
       ? pagesToken || directusToken
       : directusToken;
     const response = await fetch(url, {

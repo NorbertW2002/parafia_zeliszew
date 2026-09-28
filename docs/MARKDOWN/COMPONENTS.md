@@ -266,5 +266,5 @@ These components should follow the same design principles.
 | 1.0 | 2026-08-07 | Initial version |
 ## IntentionCalendar
 
-The mass intentions page uses a Vue island with week/month navigation, a month calendar marking published entries, and daily intention lists. Weeks run Monday through Sunday. Today follows Europe/Warsaw; calendar arithmetic uses UTC to avoid daylight-saving shifts. Empty periods link to the nearest published entries. Selecting a populated day focuses its heading. Data is passed from the service layer at build time; there are no client-side Directus requests. A noscript list preserves access without JavaScript.
+The mass intentions page uses a Vue island with week/month navigation and complete weekly text from weekly_intentions. Weeks run Monday through Sunday and appear in every month they overlap. Calendar selection focuses the weekly heading; published weeks are marked across all seven dates. Data arrives through the server service, with no browser Directus calls. Today uses Europe/Warsaw and date arithmetic uses UTC. A noscript list preserves access without JavaScript.
 

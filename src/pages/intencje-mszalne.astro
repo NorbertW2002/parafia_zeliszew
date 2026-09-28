@@ -4,16 +4,15 @@ import PageHeader from '../components/layout/PageHeader.astro';
 import Container from '../components/layout/Container.astro';
 import Section from '../components/layout/Section.astro';
 import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
-import MassSchedule from '../components/content/MassSchedule.astro';
 import IntentionCalendar from '../components/interactive/IntentionCalendar.vue';
-import { getMassIntentions } from '../services/mass-intentions';
-const intentions = await getMassIntentions();
+import { getWeeklyIntentions } from '../services/weekly-intentions';
+const intentions = await getWeeklyIntentions();
 const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Warsaw' }).format(new Date());
 ---
 <MainLayout seo={{ title: 'Intencje mszalne', description: 'Aktualne intencje mszalne w parafii.', canonicalPath: '/intencje-mszalne' }}>
   <Breadcrumbs items={[{ label: 'Intencje mszalne' }]} /><PageHeader title="Intencje mszalne" introduction="Aktualny harmonogram intencji." />
   <Section><Container class="max-w-4xl">
     <IntentionCalendar intentions={intentions} initialToday={today} client:load />
-    <noscript><MassSchedule intentions={intentions} /></noscript>
+    <noscript>{intentions.map(week => <section class="mb-8"><h2>{week.weekStart} – {week.weekEnd}</h2><p class="mt-4 whitespace-pre-wrap break-words">{week.content}</p></section>)}</noscript>
   </Container></Section>
 </MainLayout>
