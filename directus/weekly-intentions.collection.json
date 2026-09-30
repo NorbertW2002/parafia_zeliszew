@@ -1,0 +1,101 @@
+{
+  "collection": "weekly_intentions",
+  "meta": {
+    "icon": "church",
+    "display_template": "{{week_start}}",
+    "accountability": "all",
+    "archive_field": "status",
+    "archive_value": "archived",
+    "unarchive_value": "draft",
+    "archive_app_filter": true,
+    "translations": [
+      {
+        "language": "pl-PL",
+        "translation": "Intencje mszalne — tygodnie"
+      }
+    ]
+  },
+  "schema": {},
+  "fields": [
+    {
+      "field": "id",
+      "type": "uuid",
+      "meta": {
+        "hidden": true,
+        "interface": "input",
+        "special": [
+          "uuid"
+        ]
+      },
+      "schema": {
+        "is_primary_key": true,
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "status",
+      "type": "string",
+      "meta": {
+        "interface": "select-dropdown",
+        "required": true,
+        "options": {
+          "choices": [
+            {
+              "text": "Szkic",
+              "value": "draft"
+            },
+            {
+              "text": "Opublikowany",
+              "value": "published"
+            },
+            {
+              "text": "Archiwalny",
+              "value": "archived"
+            }
+          ]
+        }
+      },
+      "schema": {
+        "default_value": "draft",
+        "is_nullable": false
+      }
+    },
+    {
+      "field": "week_start",
+      "type": "date",
+      "meta": {
+        "interface": "datetime",
+        "required": true,
+        "note": "Wybierz poniedziałek. Jeden wpis obejmuje cały tydzień.",
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Początek tygodnia (poniedziałek)"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": false,
+        "is_unique": true
+      }
+    },
+    {
+      "field": "content",
+      "type": "text",
+      "meta": {
+        "interface": "input-multiline",
+        "required": true,
+        "note": "Wklej cały tydzień z Worda razem z dniami i godzinami. Zachowujemy akapity i nowe linie, bez czcionek i tabel Worda.",
+        "translations": [
+          {
+            "language": "pl-PL",
+            "translation": "Intencje na cały tydzień"
+          }
+        ]
+      },
+      "schema": {
+        "is_nullable": false
+      }
+    }
+  ]
+}
